@@ -12,10 +12,10 @@ class Tangocard::Account
   # Arguments:
   #   customer: (String)
   #   identifier: (String)
-  def self.find(customer, identifier)
-    response = Tangocard::Raas.show_account({'customer' => customer, 'identifier' => identifier})
+  def self.find(identifier)
+    response = Tangocard::Raas.show_account({'identifier' => identifier})
     if response.success?
-      new(response.parsed_response['account'])
+      new(response.parsed_response)
     else
       raise Tangocard::AccountNotFoundException, "#{response.error_message}"
     end

@@ -16,13 +16,13 @@ module TangocardHelpers
     if success
       raw_response = OpenStruct.new(
           parsed_response: {
-              "success"=>true,
-              "account"=> {
-                  "identifier"=>"test1",
-                  "email"=>"test@test.com",
-                  "customer"=>"bonusly",
-                  "available_balance"=>5000
-              }
+              "accountIdentifier" => "test1",
+              "displayName" => "test1",
+              "currencyCode" => "USD",
+              "currentBalance" => 5000.0,
+              "createdAt" => "2017-08-23T17:06:07.722Z",
+              "status" => "ACTIVE",
+              "contactEmail" => nil
           },
           code: 200
       )

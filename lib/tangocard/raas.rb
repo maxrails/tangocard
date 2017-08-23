@@ -22,7 +22,7 @@ class Tangocard::Raas
   # Arguments:
   #   params: (Hash - see https://www.tangocard.com/docs/raas-api/#get-account for details)
   def self.show_account(params)
-    Tangocard::Response.new(get_request("/accounts/#{params['customer']}/#{params['identifier']}"))
+    Tangocard::Response.new(get_request("/accounts/#{params['identifier']}"))
   end
 
   # Funds an account. Returns Tangocard::Response object.

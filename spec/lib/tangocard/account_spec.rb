@@ -13,7 +13,7 @@ describe Tangocard::Account do
   let(:security_code) { Object.new }
   let(:amount) { Object.new }
   let(:account_response) { sample_find_account_response(true) }
-  let(:find_params) { {'customer' => customer, 'identifier' => identifier} }
+  let(:find_params) { {'identifier' => identifier} }
   let(:create_params) { {'customer' => customer, 'identifier' => identifier, 'email' => email} }
   let(:fund_params) { {'amount' => amount, 'client_ip' => client_ip, 'cc_token' => cc_token, 'security_code' => security_code, 'customer' => 'bonusly', 'account_identifier' => 'test1'} }
   let(:register_credit_card_params) { {'client_ip' => client_ip, 'credit_card' => credit_card, 'customer' => 'bonusly', 'account_identifier' => 'test1'} }
@@ -21,7 +21,7 @@ describe Tangocard::Account do
 
   before do
     expect(Tangocard::Raas).to receive(:show_account).with(find_params) { account_response }
-    @account = Tangocard::Account.find(customer, identifier)
+    @account = Tangocard::Account.find(identifier)
   end
 
   describe 'class methods' do
@@ -34,8 +34,8 @@ describe Tangocard::Account do
         end
 
         it 'should find the account' do
-          expect(Tangocard::Account).to receive(:new).with(response.parsed_response['account']) { true }
-          lambda{ Tangocard::Account.find(customer, identifier) }.should_not raise_error
+          expect(Tangocard::Account).to receive(:new).with(response.parsed_response) { true }
+          lambda{ Tangocard::Account.find(identifier) }.should_not raise_error
         end
       end
 

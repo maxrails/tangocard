@@ -16,7 +16,8 @@ module Tangocard
     def initialize
       self.name = nil
       self.key = nil
-      self.base_uri = 'https://sandbox.tangocard.com'
+      # self.base_uri = 'https://sandbox.tangocard.com'
+      self.base_uri = 'https://integration-api.tangocard.com'
       self.default_brands = []
       self.local_images = {}
       self.sku_blacklist = []
