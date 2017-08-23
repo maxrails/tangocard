@@ -130,7 +130,7 @@ class Tangocard::Raas
   end
 
   def self.endpoint
-    "#{Tangocard.configuration.base_uri}/raas/v1.1"
+    "#{Tangocard.configuration.base_uri}/raas/v2"
   end
 
   def self.get_request(path)
