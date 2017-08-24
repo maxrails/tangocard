@@ -35,7 +35,7 @@ module TangocardHelpers
           code: 403
       )
     end
-    Tangocard::Response.new(raw_response)
+    TangoCard::Response.new(raw_response)
   end
 
   # return either a successful or failed create account response
@@ -62,7 +62,7 @@ module TangocardHelpers
           code: 403
       )
     end
-    Tangocard::Response.new(raw_response)
+    TangoCard::Response.new(raw_response)
   end
 
   # return either a successful or failed fund account response
@@ -87,7 +87,7 @@ module TangocardHelpers
           code: 403
       )
     end
-    Tangocard::Response.new(raw_response)
+    TangoCard::Response.new(raw_response)
   end
 
   def sample_register_credit_card_response(success)
@@ -106,7 +106,7 @@ module TangocardHelpers
           code: 400
       )
     end
-    Tangocard::Response.new(raw_response)
+    TangoCard::Response.new(raw_response)
   end
 
   def sample_delete_credit_card_response(success)
@@ -124,7 +124,7 @@ module TangocardHelpers
           code: 500
       )
     end
-    Tangocard::Response.new(raw_response)
+    TangoCard::Response.new(raw_response)
   end
 
   def sample_find_order_response(success)
@@ -171,7 +171,7 @@ module TangocardHelpers
           code: 403
       )
     end
-    Tangocard::Response.new(raw_response)
+    TangoCard::Response.new(raw_response)
   end
 
   def sample_order_index_response(success)
@@ -206,7 +206,7 @@ module TangocardHelpers
           code: 403
       )
     end
-    Tangocard::Response.new(raw_response)
+    TangoCard::Response.new(raw_response)
   end
 
   def order_create_params(variable)
@@ -278,6 +278,6 @@ module TangocardHelpers
           code: 400
       )
     end
-    Tangocard::Response.new(raw_response)
+    TangoCard::Response.new(raw_response)
   end
 end

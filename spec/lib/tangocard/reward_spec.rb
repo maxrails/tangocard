@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Tangocard::Brand do
+describe TangoCard::Brand do
   include TangocardHelpers
 
   let(:cents) { 500 }
@@ -9,7 +9,7 @@ describe Tangocard::Brand do
     context 'fixed price' do
       before do
         @reward_params = sample_brand_fixed['rewards'].first
-        @reward = Tangocard::Reward.new(@reward_params)
+        @reward = TangoCard::Reward.new(@reward_params)
       end
 
       describe 'initialize' do
@@ -62,7 +62,7 @@ describe Tangocard::Brand do
     context 'variable price' do
       before do
         @reward_params = sample_brand_variable['rewards'].first
-        @reward = Tangocard::Reward.new(@reward_params)
+        @reward = TangoCard::Reward.new(@reward_params)
       end
 
       describe 'initialize' do

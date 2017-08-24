@@ -1,4 +1,4 @@
-class Tangocard::Reward
+class TangoCard::Reward < TangoCard::Base
   attr_reader :id,
               :rewardName,
               :currencyCode,
@@ -20,9 +20,9 @@ class Tangocard::Reward
 
   def initialize(params)
     @id = params['utid']
-    %w{ rewardName currencyCode status valueType rewardType faceValue minValue maxValue createdDate lastUpdateDate countries }.each do |param|
-      eval "@#{param} = params['#{param}']"
-    end
+    attrs_list = %w{ rewardName currencyCode status valueType rewardType faceValue minValue maxValue createdDate
+                    lastUpdateDate countries }
+    initialize_read_variables attrs_list, [], params
   end
 
   def is_gift_card?
@@ -35,26 +35,6 @@ class Tangocard::Reward
 
   def fixed_price?
     @valueType == 'FIXED_VALUE'
-  end
-
-  # Is this reward purchasable given a certain number of cents available to purchase it?
-  # True if reward is available and user has enough cents
-  # False if reward is unavailable OR user doesn't have enough cents
-  #
-  # Example:
-  #   >> reward.purchasable?(500)
-  #    => true # reward is available and costs <= 500 cents
-  #
-  # Arguments:
-  #   balance_in_cents: (Integer)
-  def purchasable?(balance_in_cents)
-    return false unless available
-
-    if variable_price?
-      min_price <= balance_in_cents
-    else
-      denomination <= balance_in_cents
-    end
   end
 
   # Converts price in cents for given field to Money object using currency_code

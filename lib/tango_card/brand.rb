@@ -1,4 +1,4 @@
-class Tangocard::Brand
+class TangoCard::Brand < TangoCard::Base
   # brandKey
   # brandName
   # disclaimer
@@ -28,10 +28,10 @@ class Tangocard::Brand
   private_class_method :new
 
   def self.all verbose: true, use_cache: false
-    rewards_index = Tangocard::Raas.rewards_index use_cache: use_cache, verbose: verbose
+    rewards_index = TangoCard::Raas.rewards_index use_cache: use_cache, verbose: verbose
     resp          = rewards_index.parsed_response
     unless resp['brands'].present? && resp['brands'].length > 0
-      raise Tangocard::RaasException.new("Tangocard error with response code #{rewards_index.code}")
+      raise "Tangocard error with response code #{rewards_index.code}"
     end
     #puts resp['brands']
     resp['brands'].collect{ |p| new(p) }
@@ -63,24 +63,18 @@ class Tangocard::Brand
   end
 
   def initialize(params)
-    %w{ brandKey brandName lastUpdateDate shortDescription status }.each do |param|
-      eval "@#{param} = params['#{param}']"
-    end
+
+    attrs_list = %w{ brandKey brandName lastUpdateDate shortDescription status }
+    initialize_read_variables( attrs_list, [], params )
 
     if params['imageUrls'].present?
-      @images   = Tangocard::BrandImage.new( params['imageUrls'] )
+      @images   = TangoCard::BrandImage.new( params['imageUrls'] )
     end
 
     if params['items'].present?
-      @rewards  = params['items'].map{ |p| Tangocard::Reward.new(p) }
+      @rewards  = params['items'].map{ |p| TangoCard::Reward.new(p) }
     end
+
   end
 
-  def method_missing name, *args, &block
-    if name == :[] && args.length == 1 && block.nil? && self.methods.include?(args[0].to_sym)
-      self.send(args[0].to_sym)
-    else
-      super
-    end
-  end
 end

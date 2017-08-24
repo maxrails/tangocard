@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Tangocard::Account do
+describe TangoCard::Account do
   include TangocardHelpers
 
   let(:customer) { Object.new }
@@ -21,8 +21,8 @@ describe Tangocard::Account do
   let(:delete_credit_card_params) { {'cc_token' => cc_token, 'customer' => 'bonusly', 'account_identifier' => 'test1'} }
 
   before do
-    expect(Tangocard::Raas).to receive(:show_account).with(accountIdentifier) { account_response }
-    @account = Tangocard::Account.find(accountIdentifier)
+    expect(TangoCard::Raas).to receive(:show_account).with(accountIdentifier) { account_response }
+    @account = TangoCard::Account.find(accountIdentifier)
   end
 
   describe 'class methods' do
@@ -31,12 +31,12 @@ describe Tangocard::Account do
         let(:response) { sample_find_account_response(true) }
 
         before do
-          expect(Tangocard::Raas).to receive(:show_account).with(accountIdentifier) { response }
+          expect(TangoCard::Raas).to receive(:show_account).with(accountIdentifier) { response }
         end
 
         it 'should find the account' do
-          expect(Tangocard::Account).to receive(:new).with(response.parsed_response) { true }
-          lambda{ Tangocard::Account.find(accountIdentifier) }.should_not raise_error
+          expect(TangoCard::Account).to receive(:new).with(response.parsed_response) { true }
+          lambda{ TangoCard::Account.find(accountIdentifier) }.should_not raise_error
         end
       end
 
@@ -44,11 +44,11 @@ describe Tangocard::Account do
         let(:response) { sample_find_account_response(false) }
 
         before do
-          expect(Tangocard::Raas).to receive(:show_account).with(accountIdentifier) { response }
+          expect(TangoCard::Raas).to receive(:show_account).with(accountIdentifier) { response }
         end
 
         it 'should throw an exception' do
-          lambda{ Tangocard::Account.find(accountIdentifier)}.should raise_error
+          lambda{ TangoCard::Account.find(accountIdentifier)}.should raise_error
         end
       end
     end
@@ -58,12 +58,12 @@ describe Tangocard::Account do
         let(:response) { sample_create_account_response(true) }
 
         before do
-          expect(Tangocard::Raas).to receive(:create_account).with(create_params) { response }
+          expect(TangoCard::Raas).to receive(:create_account).with(create_params) { response }
         end
 
         it 'should create the account and initialize an account object' do
-          expect(Tangocard::Account).to receive(:new).with(response.parsed_response['account']) { true }
-          lambda{ Tangocard::Account.create(customer, identifier, email) }.should_not raise_error
+          expect(TangoCard::Account).to receive(:new).with(response.parsed_response['account']) { true }
+          lambda{ TangoCard::Account.create(customer, identifier, email) }.should_not raise_error
         end
       end
 
@@ -71,27 +71,27 @@ describe Tangocard::Account do
         let(:response) { sample_create_account_response(false) }
 
         before do
-          expect(Tangocard::Raas).to receive(:create_account).with(create_params) { response }
+          expect(TangoCard::Raas).to receive(:create_account).with(create_params) { response }
         end
 
         it 'should throw an exception' do
-          lambda{ Tangocard::Account.create(customer, identifier, email) }.should raise_error
+          lambda{ TangoCard::Account.create(customer, identifier, email) }.should raise_error
         end
       end
     end
 
     describe 'self.find_or_create' do
       it 'should find the customer' do
-        expect(Tangocard::Account).to receive(:find).with(customer, identifier) { true }
-        Tangocard::Account.find_or_create(customer, identifier, email).should be true
+        expect(TangoCard::Account).to receive(:find).with(customer, identifier) { true }
+        TangoCard::Account.find_or_create(customer, identifier, email).should be true
       end
 
       it 'should create the customer if find fails' do
-        expect(Tangocard::Account).to receive(:find).with(customer, identifier) do
-          raise Tangocard::AccountNotFoundException, 'Tangocard - Error finding account:'
+        expect(TangoCard::Account).to receive(:find).with(customer, identifier) do
+          raise TangoCard::AccountNotFoundException, 'Tangocard - Error finding account:'
         end
-        expect(Tangocard::Account).to receive(:create).with(customer, identifier, email) { true }
-        Tangocard::Account.find_or_create(customer, identifier, email).should be true
+        expect(TangoCard::Account).to receive(:create).with(customer, identifier, email) { true }
+        TangoCard::Account.find_or_create(customer, identifier, email).should be true
       end
     end
   end
@@ -110,13 +110,13 @@ describe Tangocard::Account do
         expect(params).to receive(:[]).with('identifier') { identifier }
         expect(params).to receive(:[]).with('available_balance') { available_balance }
         expect(available_balance).to receive(:to_i) { 1 }
-        Tangocard::Account.send(:new, params)
+        TangoCard::Account.send(:new, params)
       end
     end
 
     describe 'register_credit_card' do
       before do
-        expect(Tangocard::Raas).to receive(:register_credit_card).with(register_credit_card_params) { response }
+        expect(TangoCard::Raas).to receive(:register_credit_card).with(register_credit_card_params) { response }
       end
 
       context 'register_credit_card succeeds' do
@@ -132,7 +132,7 @@ describe Tangocard::Account do
       context 'register_credit_card fails' do
         let(:response) { sample_register_credit_card_response(false) }
 
-        it 'return a Tangocard::Response with success? == false' do
+        it 'return a TangoCard::Response with success? == false' do
           response = @account.register_credit_card(client_ip, credit_card)
           expect(response.success?).to be false
           expect(response.denial_code).not_to be nil
@@ -143,7 +143,7 @@ describe Tangocard::Account do
 
     describe 'cc_fund' do
       before do
-        expect(Tangocard::Raas).to receive(:cc_fund_account).with(fund_params) { response }
+        expect(TangoCard::Raas).to receive(:cc_fund_account).with(fund_params) { response }
       end
 
       context 'cc_fund succeeds' do
@@ -158,7 +158,7 @@ describe Tangocard::Account do
       context 'cc_fund fails' do
         let(:response) { sample_fund_account_response(false) }
 
-        it 'return a Tangocard::Response with success? == false' do
+        it 'return a TangoCard::Response with success? == false' do
           response = @account.cc_fund(amount, client_ip, cc_token, security_code)
           expect(response.success?).to be false
           expect(response.error_message).not_to be nil
@@ -169,7 +169,7 @@ describe Tangocard::Account do
 
     describe 'delete_credit_card' do
       before do
-        expect(Tangocard::Raas).to receive(:delete_credit_card).with(delete_credit_card_params) { response }
+        expect(TangoCard::Raas).to receive(:delete_credit_card).with(delete_credit_card_params) { response }
       end
 
       context 'delete_credit_card succeeds' do
@@ -183,7 +183,7 @@ describe Tangocard::Account do
       context 'delete_credit_card fails' do
         let (:response) { sample_delete_credit_card_response(false) }
 
-        it 'return a Tangocard::Response with success? == false' do
+        it 'return a TangoCard::Response with success? == false' do
           response = @account.delete_credit_card(cc_token)
           expect(response.success?).to be false
           expect(response.error_message).not_to be nil

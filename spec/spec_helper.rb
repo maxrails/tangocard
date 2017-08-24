@@ -1,4 +1,4 @@
-require 'tangocard'
+require 'tango_card'
 
 Dir["./spec/support/*/*.rb"].each {|f| require f}
 
