@@ -16,17 +16,9 @@ class Tangocard::Order
 
   private_class_method :new
 
-  # Return an array of all orders.
-  #
-  # Example:
-  #   >> Tangocard::Order.all
-  #    => [#<Tangocard::Order:0x007f9a6c4bca68 ...>, #<Tangocard::Order:0x007f9a6c4bca68 ...>, ...]
-  #
-  # Arguments:
-  #   params: (Hash - optional, see https://www.tangocard.com/docs/raas-api/#list-orders for details)
   def self.all(params = {})
     response = Tangocard::Raas.orders_index(params)
-    if response.success?
+    if response.success_code?
       response.parsed_response['orders'].map{|o| new(o)}
     else
       []
@@ -43,21 +35,38 @@ class Tangocard::Order
   #   order_id: (String)
   def self.find(order_id)
     response = Tangocard::Raas.show_order({'order_id' => order_id})
-    if response.success?
+    if response.success_code?
       new(response.parsed_response['order'], response)
     else
       raise Tangocard::OrderNotFoundException, "#{response.error_message}"
     end
   end
 
-  # Create a new order. Raises Tangocard::OrderCreateFailedException on failure.
-  #
-  # Example:
-  #   >> Tangocard::Order.create(params)
-  #    => #<Tangocard::Order:0x007f9a6c4bca68 ...>
-  #
-  # Arguments:
-  #   params: (Hash - see https://www.tangocard.com/docs/raas-api/#create-order for details)
+  # Create order
+  # "REQUIRED" params
+  # "accountIdentifier"   - specify the account this order will be deducted from
+  # "amount"              - specify the face value of of the reward. Always required, including for fixed value items.
+  # "customerIdentifier"  - specify the customer associated with the order.
+  #                         Must be the customer the accountIdentifier is associated with.
+  # "utid"                - the unique identifier for the reward you are sending as provided in the Get Catalog call
+  # "sendEmail"           - should Tango Card send the email to the recipient?
+  # "recipient"           - email - required if sendEmail is true
+  # "recipient"           - firstName - required if sendEmail is true (100 character max)
+  # "recipient"           - lastName - always optional (100 character max)
+  # recepient: { email: 'string', firstName: 'string', lastName: 'string' }
+
+  # "OPTIONAL" params
+  # "campaign"            - Optional campaign that may be used to administratively categorize a specific order or,
+  #                         if applicable, call a designated campaign email template.
+  # "emailSubject"        - Optional. If not specified, a default email subject will be used for the specified reward.
+  # "externalRefID"       - Optional. Idempotenent field that can be used for client-side order cross reference and prevent
+  #                         accidental order duplication. Will be returned in order response, order details, and order history.
+  # "message"             - optional gift message
+  # "sender"              - firstName - always optional (100 character max)
+  # "sender"              - lastName - always optional (100 character max)
+  # "sender"              - email - always optional
+  # "notes"               - Optional order notes (up to 150 characters)
+
   def self.create(params)
     response = Tangocard::Raas.create_order(params)
     if response.success?

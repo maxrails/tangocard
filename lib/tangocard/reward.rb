@@ -1,30 +1,40 @@
 class Tangocard::Reward
-  attr_reader :type, :description, :sku, :is_variable, :denomination, :min_price, :max_price,
-              :currency_code, :available, :countries
+  attr_reader :id,
+              :rewardName,
+              :currencyCode,
+              :status,
+              :valueType,
+              :rewardType,
+              :faceValue,
+              :minValue,
+              :maxValue,
+              :createdDate,
+              :lastUpdateDate,
+              :countries
+
+  # rewardType: [ 'cash equivalent', 'gift card' ]
+  # valueType: [ 'VARIABLE_VALUE', 'FIXED_VALUE' ]
+  # for "VARIABLE_VALUE": minValue, maxValue
+  # for "FIXED_VALUE": faceValue
+  # countries: ["US", "AU", "CA", "MX", "DE", "PR", "AE", "IN", "JP", "CN", "IT", "FR", "NZ", "ES", "GU", "BR", "BS", "AR", "SE", "SG", "UK", "DZ", "TR"]
 
   def initialize(params)
-    @type          = params['type']
-    @description   = params['description']
-    @sku           = params['sku']
-    @is_variable   = params['is_variable']
-    @denomination  = params['denomination'].to_i
-    @min_price     = params['min_price'].to_i
-    @max_price     = params['max_price'].to_i
-    @currency_code = params['currency_code']
-    @available     = params['available']
-    @countries     = params['countries']
+    @id = params['utid']
+    %w{ rewardName currencyCode status valueType rewardType faceValue minValue maxValue createdDate lastUpdateDate countries }.each do |param|
+      eval "@#{param} = params['#{param}']"
+    end
   end
 
-  # Is this a variable-priced reward?
-  #
-  # Example:
-  #   >> reward.variable_price?
-  #    => true # reward is variable-priced
-  #
-  # Arguments:
-  #   none
+  def is_gift_card?
+    @rewardType == 'gift card'
+  end
+
   def variable_price?
-    is_variable
+    @valueType == 'VARIABLE_VALUE'
+  end
+
+  def fixed_price?
+    @valueType == 'FIXED_VALUE'
   end
 
   # Is this reward purchasable given a certain number of cents available to purchase it?

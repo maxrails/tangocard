@@ -1,17 +1,27 @@
 class Tangocard::Response
   attr_reader :parsed_response, :code
 
-  def initialize(raw_response)
-    puts raw_response
-    @parsed_response = raw_response.parsed_response
-    @code = raw_response.code
+  def initialize raw_response
+    @parsed_response  = raw_response.parsed_response
+    @code             = raw_response.code
   end
 
   def success?
-    safe_response['status'] || false
+    #puts "============= SUCCESS STARTS ============"
+    #puts safe_response
+    #puts "className: #{safe_response.class}"
+    #puts "============= SUCCESS ENDS ============"
+    safe_response['status'].downcase == 'active' || false
+  end
+
+  def success_code?
+    safe_response['code'].to_i == 200 || false
   end
 
   def error_message
+    #puts "============= ERROR STARTS ============"
+    #puts safe_response
+    #puts "============= ERROR ENDS ============"
     safe_response['errors'][0]['message']
   end
 

@@ -1,74 +1,84 @@
 class Tangocard::Account
-  attr_reader :customer, :identifier, :email, :available_balance, :cc_token
+  attr_reader :accountIdentifier,
+              :displayName,
+              :currencyCode,
+              :currentBalance,
+              :createdAt,
+              :status,
+              :contactEmail
 
   private_class_method :new
 
-  # Find account given customer and identifier. Raises Tangocard::AccountNotFoundException on failure.
+  # doesnt work for some reason
+  def self.show_all
+    response = Tangocard::Raas.show_all_accounts
+    puts response
+  end
+
+  # Find account given accountIdentifier. Raises Tangocard::AccountCustomerNotFoundException on failure.
   #
   # Example:
-  #   >> Tangocard::Account.find('bonusly', 'test')
-  #    => #<Tangocard::Account:0x007f9a6fec0138 @customer="bonusly", @email="dev@bonus.ly", @identifier="test", @available_balance=1200>
+  #   >> Tangocard::Account.find('oneclass')
+  #    => #<Tangocard::Account:0x007fc5da3d56b0 @customer="oneclass", @email=nil, @identifier="oneclass", @available_balance=10000.0>
+  #    Balance is in dollars. Email is not required in sandbox mode, as a replacement using displayName
   #
   # Arguments:
-  #   customer: (String)
-  #   identifier: (String)
-  def self.find(identifier)
-    response = Tangocard::Raas.show_account({'identifier' => identifier})
+  #   accountIdentifier: (String)
+  def self.find( accountIdentifier )
+    response = Tangocard::Raas.show_account( accountIdentifier )
     if response.success?
       new(response.parsed_response)
     else
-      raise Tangocard::AccountNotFoundException, "#{response.error_message}"
+      raise Tangocard::AccountCustomerNotFoundException, "#{response.error_message}"
     end
   end
 
-  # Create account given customer, identifier, and email.
-  # Raises Tangocard::AccountCreateFailedException on failure.
-  #
-  # Example:
-  #   >> Tangocard::Account.create('bonusly', 'test', 'dev@bonus.ly')
-  #    => #<Tangocard::Account:0x007f9a6fec0138 @customer="bonusly", @email="dev@bonus.ly", @identifier="test", @available_balance=0>
-  #
-  # Arguments:
-  #   customer: (String)
-  #   identifier: (String)
-  #   email: (String)
-  def self.create(customer, identifier, email)
-    response = Tangocard::Raas.create_account({'customer' => customer, 'identifier' => identifier, 'email' => email})
+  #accountCriteria = { contactEmail, displayName, accountIdentifier }
+
+  # "contactEmail"      - An email address for a designated representative for this account.
+  # "displayName"       - A friendly name for this account
+  # "accountIdentifier" - A unique identifier for this account.
+  #                       This identifier must be lowercase if alphabetic characters are used.
+
+  def self.create customerIdentifier, email, displayName, accountIdentifier
+    accountCriteria = {
+        'contactEmail'      => email,
+        'displayName'       => displayName,
+        'accountIdentifier' => accountIdentifier
+    }
+    response = Tangocard::Raas.create_account( customerIdentifier, accountCriteria )
     if response.success?
-      new(response.parsed_response['account'])
+      puts response
+      puts response.parsed_response
+      #puts response.parsed_response
+      #new(response.parsed_response['account'])
     else
       raise Tangocard::AccountCreateFailedException, "#{response.error_message}"
     end
   end
 
-  # Find account, or create if account not found.
-  # Raises Tangocard::AccountCreateFailedException on failure.
-  #
-  # Example:
-  #   >> Tangocard::Account.find_or_create('bonusly', 'test', 'dev@bonus.ly')
-  #    => #<Tangocard::Account:0x007f9a6fec0138 @customer="bonusly", @email="dev@bonus.ly", @identifier="test", @available_balance=0>
-  #
-  # Arguments:
-  #   customer: (String)
-  #   identifier: (String)
-  #   email: (String)
-  def self.find_or_create(customer, identifier, email)
+  #createAccountParams = [ customerIdentifier, accountCriteria ]
+  def self.find_or_create( accountIdentifier, createAccountParams )
     begin
       find(customer, identifier)
-    rescue Tangocard::AccountNotFoundException => e
+    rescue Tangocard::AccountCustomerNotFoundException => e
       create(customer, identifier, email)
     end
   end
 
   def initialize(params)
-    @customer = params['customer']
-    @email = params['email']
-    @identifier = params['identifier']
-    @available_balance = params['available_balance'].to_i
+    @displayName        = params['displayName']
+    @accountIdentifier  = params['accountIdentifier']
+    @contactEmail       = params['contactEmail']
+    @available_balance  = params['currentBalance'].to_f # Balance is in dollars, NOT CENTS!!!
   end
 
   def balance
     @available_balance
+  end
+
+  def balance_in_cents
+    ( @available_balance * 100 ).to_i
   end
 
   # Register a credit card
