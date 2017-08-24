@@ -5,6 +5,7 @@ describe Tangocard::Account do
 
   let(:customer) { Object.new }
   let(:identifier) { Object.new }
+  let(:accountIdentifier) { "oneclass" }
   let(:email) { Object.new }
   let(:available_balance) { Object.new }
   let(:credit_card) { Object.new }
@@ -20,8 +21,8 @@ describe Tangocard::Account do
   let(:delete_credit_card_params) { {'cc_token' => cc_token, 'customer' => 'bonusly', 'account_identifier' => 'test1'} }
 
   before do
-    expect(Tangocard::Raas).to receive(:show_account).with(find_params) { account_response }
-    @account = Tangocard::Account.find(identifier)
+    expect(Tangocard::Raas).to receive(:show_account).with(accountIdentifier) { account_response }
+    @account = Tangocard::Account.find(accountIdentifier)
   end
 
   describe 'class methods' do
@@ -30,12 +31,12 @@ describe Tangocard::Account do
         let(:response) { sample_find_account_response(true) }
 
         before do
-          expect(Tangocard::Raas).to receive(:show_account).with(find_params) { response }
+          expect(Tangocard::Raas).to receive(:show_account).with(accountIdentifier) { response }
         end
 
         it 'should find the account' do
           expect(Tangocard::Account).to receive(:new).with(response.parsed_response) { true }
-          lambda{ Tangocard::Account.find(identifier) }.should_not raise_error
+          lambda{ Tangocard::Account.find(accountIdentifier) }.should_not raise_error
         end
       end
 
@@ -43,11 +44,11 @@ describe Tangocard::Account do
         let(:response) { sample_find_account_response(false) }
 
         before do
-          expect(Tangocard::Raas).to receive(:show_account).with(find_params) { response }
+          expect(Tangocard::Raas).to receive(:show_account).with(accountIdentifier) { response }
         end
 
         it 'should throw an exception' do
-          lambda{ Tangocard::Account.find(customer, identifier)}.should raise_error
+          lambda{ Tangocard::Account.find(accountIdentifier)}.should raise_error
         end
       end
     end

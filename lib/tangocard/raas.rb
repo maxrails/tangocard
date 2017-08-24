@@ -129,9 +129,9 @@ class Tangocard::Raas
   #    => #<Tangocard::Response:0x007f9a6c4bca68 ...>
   #
   # Arguments:
-  #   params: (Hash - see https://www.tangocard.com/docs/raas-api/#get-order for details)
-  def self.show_order params
-    Tangocard::Response.new(get_request("/orders/#{params['order_id']}"))
+  #   reference_order_id
+  def self.show_order reference_order_id
+    Tangocard::Response.new(get_request("/orders/#{reference_order_id}"))
   end
 
   # Retrieve a list of historical orders. Returns Tangocard::Response object.
@@ -139,19 +139,8 @@ class Tangocard::Raas
   # Example:
   #   >> Tangocard::Raas.orders_index
   #    => #<Tangocard::Response:0x007f9a6c4bca68 ...>
-  #
-  # Arguments:
-  #   params: (Hash - see https://www.tangocard.com/docs/raas-api/#list-orders for details)
-  def self.orders_index params = {}
-    query_string = ""
-    if params.any?
-      query_string = "?"
-      params.keys.each_with_index do |k, i|
-        query_string += "&" unless i == 0
-        query_string += "#{k}=#{params[k]}"
-      end
-    end
-    Tangocard::Response.new(get_request("/orders#{query_string}"))
+  def self.orders_index
+    Tangocard::Response.new(get_request("/orders"))
   end
 
   private

@@ -11,11 +11,11 @@ class Tangocard::Response
     #puts safe_response
     #puts "className: #{safe_response.class}"
     #puts "============= SUCCESS ENDS ============"
-    safe_response['status'].downcase == 'active' || false
+    (safe_response['status'].downcase if safe_response['status']) == 'active' || false
   end
 
   def success_code?
-    safe_response['code'].to_i == 200 || false
+    (safe_response['code'].to_i if safe_response['code'].to_i) == 200 || false
   end
 
   def error_message

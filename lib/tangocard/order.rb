@@ -1,42 +1,57 @@
 class Tangocard::Order
-  attr_reader :order_id,
+  attr_reader :reference_order_id,
               :account_identifier,
-              :customer,
-              :sku,
-              :denomination,
-              :amount_charged,
-              :reward_message,
-              :reward_subject,
-              :reward_from,
-              :delivered_at,
+              :amount,
+              :customer_identifier,
               :recipient,
-              :external_id,
-              :reward,
-              :raw_response
+              :send_email,
+              :utid,
+              :campain,
+              :email_subject,
+              :external_ref_id,
+              :message,
+              :sender,
+              :notes
 
   private_class_method :new
 
-  def self.all(params = {})
-    response = Tangocard::Raas.orders_index(params)
-    if response.success_code?
-      response.parsed_response['orders'].map{|o| new(o)}
+  def initialize(params)
+    @reference_order_id  = params['reference_order_id']
+    @account_identifier  = params['account_identifier']
+    @amount              = params['amount']
+    @customer_identifier = params['customer_identifier']
+    @recipient           = params['recipient']
+    @send_email          = params['send_email']
+    @utid                = params['utid']
+    @campaign            = params['campaign'] || {}
+    @email_subject       = params['email_subject'] || {}
+    @external_ref_id     = params['external_ref_id'] || {}
+    @message             = params['message'] || {}
+    @sender              = params['sender'] || {}
+    @notes               = params['notes'] || {}
+  end
+
+  def self.show_all
+    response = Tangocard::Raas.orders_index
+    if response.success?
+      response.parsed_response.map{|p| new(p)}
     else
       []
     end
   end
 
-  # Find an order by order_id. Raises Tangocard::OrderNotFoundException on failure.
+  # Find an order by reference_order_id. Raises Tangocard::OrderNotFoundException on failure.
   #
   # Example:
   #   >> Tangocard::Order.find("113-08258652-15")
   #    => #<Tangocard::Order:0x007f9a6e3a90c0 @order_id="113-08258652-15", @account_identifier="ElliottTest", @customer="ElliottTest", @sku="APPL-E-1500-STD", @amount=1500, @reward_message="testing", @reward_subject="RaaS Sandbox Test", @reward_from="Elliott", @delivered_at="2013-08-15T17:42:18+00:00", @recipient={"name"=>"Elliott", "email"=>"elliott@tangocard.com"}, @reward={"token"=>"520d12fa655b54.34581245", "number"=>"1111111111111256"}>
   #
   # Arguments:
-  #   order_id: (String)
-  def self.find(order_id)
-    response = Tangocard::Raas.show_order({'order_id' => order_id})
+  #   reference_order_id: (String)
+  def self.find(reference_order_id)
+    response = Tangocard::Raas.show_order(reference_order_id)
     if response.success_code?
-      new(response.parsed_response['order'], response)
+      new(response.parsed_response)
     else
       raise Tangocard::OrderNotFoundException, "#{response.error_message}"
     end
@@ -44,15 +59,16 @@ class Tangocard::Order
 
   # Create order
   # "REQUIRED" params
-  # "accountIdentifier"   - specify the account this order will be deducted from
-  # "amount"              - specify the face value of of the reward. Always required, including for fixed value items.
-  # "customerIdentifier"  - specify the customer associated with the order.
+  # "accountIdentifier"  - specify the account this order will be deducted from
+  # "amount"             - specify the face value of of the reward. Always required, including for fixed value items.
+  # "customerIdentifier" - specify the customer associated with the order. Must be the customer the accountIdentifier is associated with.
   #                         Must be the customer the accountIdentifier is associated with.
-  # "utid"                - the unique identifier for the reward you are sending as provided in the Get Catalog call
-  # "sendEmail"           - should Tango Card send the email to the recipient?
-  # "recipient"           - email - required if sendEmail is true
-  # "recipient"           - firstName - required if sendEmail is true (100 character max)
-  # "recipient"           - lastName - always optional (100 character max)
+  # "recipient"          - email - required if sendEmail is true
+  # "recipient"          - firstName - required if sendEmail is true (100 character max)
+  # "recipient"          - lastName - always optional (100 character max)
+  # "sendEmail"          - should Tango Card send the email to the recipient?
+  # "utid"               - the unique identifier for the reward you are sending as provided in the Get Catalog call
+
   # recepient: { email: 'string', firstName: 'string', lastName: 'string' }
 
   # "OPTIONAL" params
@@ -70,31 +86,14 @@ class Tangocard::Order
   def self.create(params)
     response = Tangocard::Raas.create_order(params)
     if response.success?
-      new(response.parsed_response['order'], response)
+      new(response.parsed_response)
     else
-      raise Tangocard::OrderCreateFailedException, "#{response.error_message} #{response.invalid_inputs}"
+      raise Tangocard::OrderCreateFailedException, "#{response.error_message}"
     end
   end
 
-  def initialize(params, raw_response = nil)
-    @order_id           = params['order_id']
-    @account_identifier = params['account_identifier']
-    @customer           = params['customer']
-    @sku                = params['sku']
-    @denomination       = params['denomination'] || {}
-    @amount_charged     = params['amount_charged'] || {}
-    @reward_message     = params['reward_message']
-    @reward_subject     = params['reward_subject']
-    @reward_from        = params['reward_from']
-    @delivered_at       = params['delivered_at']
-    @recipient          = params['recipient'] || {}
-    @external_id        = params['external_id']
-    @reward             = params['reward'] || {}
-    @raw_response       = raw_response
-  end
-
-  def reward
-    @reward ||= {}
+  def recipient
+    @recipient ||= {}
   end
 
   def identifier

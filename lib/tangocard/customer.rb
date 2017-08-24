@@ -13,7 +13,7 @@ class Tangocard::Customer
   # doesnt work for some reason
   def self.show_all
     response = Tangocard::Raas.show_all_customers
-    puts response
+    puts response.parsed_response
   end
 
   # Find customer given customerIdentifier. Raises Tangocard::AccountCustomerNotFoundException on failure.
