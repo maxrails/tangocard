@@ -5,6 +5,8 @@ require 'active_support'
 require 'active_support/cache/memory_store'
 require 'tango_card/version'
 require 'json'
+require 'bundler/setup'
+
 
 module TangoCard
 
