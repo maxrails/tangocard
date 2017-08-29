@@ -1,4 +1,4 @@
-class TangoCard::Response
+class TangoCardV2::Response
   attr_reader :parsed_response, :code
 
   def initialize raw_response
@@ -15,7 +15,7 @@ class TangoCard::Response
   end
 
   def success_code?
-    #puts safe_response['code']
+    puts safe_response['code']
     ( true if [ 200, 201 ].include?( safe_response['code'].to_i ) ) || false
   end
 

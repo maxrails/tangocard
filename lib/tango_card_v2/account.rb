@@ -1,4 +1,4 @@
-class TangoCard::Account < TangoCard::Base
+class TangoCardV2::Account < TangoCardV2::Base
   attr_reader :accountIdentifier,
               :displayName,
               :currencyCode,
@@ -11,21 +11,21 @@ class TangoCard::Account < TangoCard::Base
 
   # doesnt work for some reason
   def self.show_all
-    response = TangoCard::Raas.show_all_accounts
+    response = TangoCardV2::Raas.show_all_accounts
     puts response
   end
 
   # Find account given accountIdentifier.
   #
   # Example:
-  #   >> TangoCard::Account.find('oneclass')
-  #    => #<TangoCard::Account:0x007fc5da3d56b0 @customer="oneclass", @email=nil, @identifier="oneclass", @available_balance=10000.0>
+  #   >> TangoCardV2::Account.find('oneclass')
+  #    => #<TangoCardV2::Account:0x007fc5da3d56b0 @customer="oneclass", @email=nil, @identifier="oneclass", @available_balance=10000.0>
   #    Balance is in dollars. Email is not required in sandbox mode, as a replacement using displayName
   #
   # Arguments:
   #   accountIdentifier: (String)
   def self.find( accountIdentifier )
-    response = TangoCard::Raas.show_account( accountIdentifier )
+    response = TangoCardV2::Raas.show_account( accountIdentifier )
     if response.success?
       new(response.parsed_response)
     else
@@ -46,7 +46,7 @@ class TangoCard::Account < TangoCard::Base
         'displayName'       => displayName,
         'accountIdentifier' => accountIdentifier
     }
-    response = TangoCard::Raas.create_account( customerIdentifier, accountCriteria )
+    response = TangoCardV2::Raas.create_account( customerIdentifier, accountCriteria )
     if response.success?
       puts response.parsed_response
       new(response.parsed_response['account'])

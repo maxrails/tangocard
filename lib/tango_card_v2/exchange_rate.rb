@@ -1,38 +1,38 @@
-class TangoCard::ExchangeRate < TangoCard::Base
+class TangoCardV2::ExchangeRate < TangoCardV2::Base
   attr_reader :currency_code, :rate
 
   # Return current currency exchange rate timestamp.
   #
   # Example:
-  #   >> TangoCard::ExchangeRate.timestamp
+  #   >> TangoCardV2::ExchangeRate.timestamp
   #    => 1456956187
   #
   # Arguments:
   #   none
   def self.timestamp
-    TangoCard::Raas.rewards_index.parsed_response['xrates']['timestamp']
+    TangoCardV2::Raas.rewards_index.parsed_response['xrates']['timestamp']
   end
 
   # Return an array of all currency exchange rates.
   #
   # Example:
-  #   >> TangoCard::ExchangeRate.all
-  #    => [#<TangoCard::ExchangeRate:0x007ff31ab927a0 @currency_code="USD", @rate="1.00000">,
-  #        #<TangoCard::ExchangeRate:0x007ff31ab92750 @currency_code="JPY", @rate="123.44700">, ...]
+  #   >> TangoCardV2::ExchangeRate.all
+  #    => [#<TangoCardV2::ExchangeRate:0x007ff31ab927a0 @currency_code="USD", @rate="1.00000">,
+  #        #<TangoCardV2::ExchangeRate:0x007ff31ab92750 @currency_code="JPY", @rate="123.44700">, ...]
   #
   # Arguments:
   #   none
   def self.all
-    TangoCard::Raas.rewards_index.parsed_response['xrates']['rates'].map do |currency_code, rate|
-      TangoCard::ExchangeRate.new(currency_code, rate)
+    TangoCardV2::Raas.rewards_index.parsed_response['xrates']['rates'].map do |currency_code, rate|
+      TangoCardV2::ExchangeRate.new(currency_code, rate)
     end
   end
 
   # Find a exchange rate by its currency code.
   #
   # Example:
-  #   >> TangoCard::ExchangeRate.find("EUR")
-  #    => #<TangoCard::ExchangeRate:0x007ff31a2dd808 @currency_code="EUR", @rate="0.88870">
+  #   >> TangoCardV2::ExchangeRate.find("EUR")
+  #    => #<TangoCardV2::ExchangeRate:0x007ff31a2dd808 @currency_code="EUR", @rate="0.88870">
   #
   # Arguments:
   #   currency_code: (String)
@@ -44,7 +44,7 @@ class TangoCard::ExchangeRate < TangoCard::Base
   # of other currencies. For more information and use cases refer to Money gem docs.
   #
   # Example:
-  #   >> TangoCard::ExchangeRate.populate_money_rates
+  #   >> TangoCardV2::ExchangeRate.populate_money_rates
   #    => true
   #   >> reward.to_money(:denomination)
   #    => #<Money fractional:500 currency:EUR>

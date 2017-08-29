@@ -1,4 +1,4 @@
-class TangoCard::BrandImage < TangoCard::Base
+class TangoCardV2::BrandImage < TangoCardV2::Base
   attr_reader :w80,
               :w130,
               :w200,
@@ -21,7 +21,7 @@ class TangoCard::BrandImage < TangoCard::Base
   end
 
   def default_img
-    def_img = TangoCard.configuration.default_image_size
+    def_img = TangoCardV2.configuration.default_image_size
     if def_img.present? && %w{ 80 130 200 278 300 1200 }.include?(def_img.to_s)
       eval "@w#{def_img}"
     else

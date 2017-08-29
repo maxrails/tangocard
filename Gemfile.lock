@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    tango_card (1.0)
+    tango_card_v2 (1.0)
       activesupport (> 4.2)
       httparty (> 0.11)
       i18n (> 0.7)
@@ -46,7 +46,7 @@ PLATFORMS
 
 DEPENDENCIES
   rspec (> 3.5)
-  tango_card!
+  tango_card_v2!
 
 BUNDLED WITH
    1.15.4

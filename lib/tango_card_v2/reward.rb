@@ -1,4 +1,4 @@
-class TangoCard::Reward < TangoCard::Base
+class TangoCardV2::Reward < TangoCardV2::Base
   attr_reader :id,
               :rewardName,
               :currencyCode,

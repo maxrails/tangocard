@@ -1,4 +1,4 @@
-class TangoCard::Base
+class TangoCardV2::Base
 
   def attrs_list
     instance_variables.collect{|t| t.to_s.gsub('@','').to_sym}

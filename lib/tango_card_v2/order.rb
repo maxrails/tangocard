@@ -1,4 +1,4 @@
-class TangoCard::Order < TangoCard::Base
+class TangoCardV2::Order < TangoCardV2::Base
   attr_reader :referenceOrderID,
               :accountIdentifier,
               :amount,
@@ -40,7 +40,7 @@ class TangoCard::Order < TangoCard::Base
   end
 
   def self.show_all
-    response = TangoCard::Raas.orders_index
+    response = TangoCardV2::Raas.orders_index
     if response.success?
       response.parsed_response.map{|p| new(p)}
     else
@@ -48,16 +48,16 @@ class TangoCard::Order < TangoCard::Base
     end
   end
 
-  # Find an order by reference_order_id. Raises TangoCard::OrderNotFoundException on failure.
+  # Find an order by reference_order_id. Raises TangoCardV2::OrderNotFoundException on failure.
   #
   # Example:
-  #   >> TangoCard::Order.find("113-08258652-15")
-  #    => #<TangoCard::Order:0x007f9a6e3a90c0 @order_id="113-08258652-15", @account_identifier="ElliottTest", @customer="ElliottTest", @sku="APPL-E-1500-STD", @amount=1500, @reward_message="testing", @reward_subject="RaaS Sandbox Test", @reward_from="Elliott", @delivered_at="2013-08-15T17:42:18+00:00", @recipient={"name"=>"Elliott", "email"=>"elliott@tangocard.com"}, @reward={"token"=>"520d12fa655b54.34581245", "number"=>"1111111111111256"}>
+  #   >> TangoCardV2::Order.find("113-08258652-15")
+  #    => #<TangoCardV2::Order:0x007f9a6e3a90c0 @order_id="113-08258652-15", @account_identifier="ElliottTest", @customer="ElliottTest", @sku="APPL-E-1500-STD", @amount=1500, @reward_message="testing", @reward_subject="RaaS Sandbox Test", @reward_from="Elliott", @delivered_at="2013-08-15T17:42:18+00:00", @recipient={"name"=>"Elliott", "email"=>"elliott@tangocard.com"}, @reward={"token"=>"520d12fa655b54.34581245", "number"=>"1111111111111256"}>
   #
   # Arguments:
   #   reference_order_id: (String)
   def self.find(reference_order_id)
-    response = TangoCard::Raas.show_order(reference_order_id)
+    response = TangoCardV2::Raas.show_order(reference_order_id)
     if response.code == 200
       new(response.parsed_response)
     else
@@ -104,7 +104,7 @@ class TangoCard::Order < TangoCard::Base
   #   'utid' => 'U355612'
   #}
   def self.create(params)
-    response = TangoCard::Raas.create_order(params)
+    response = TangoCardV2::Raas.create_order(params)
     if response.code == 201
       new(response.parsed_response)
     else

@@ -1,12 +1,12 @@
 $:.push File.expand_path('../lib', __FILE__)
 
 # Maintain your gem's version:
-require 'tango_card/version'
+require 'tango_card_v2/version'
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
-  s.name        = 'tango_card'
-  s.version     = TangoCard::VERSION
+  s.name        = 'tango_card_v2'
+  s.version     = TangoCardV2::VERSION
   s.authors     = [ 'Max K', 'Denis E' ]
   s.email       = ['max@oneclass.com']
   s.homepage    = 'https://oneclass.com'

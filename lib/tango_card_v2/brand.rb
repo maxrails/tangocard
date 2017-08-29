@@ -1,4 +1,4 @@
-class TangoCard::Brand < TangoCard::Base
+class TangoCardV2::Brand < TangoCardV2::Base
   # brandKey
   # brandName
   # disclaimer
@@ -28,7 +28,7 @@ class TangoCard::Brand < TangoCard::Base
   private_class_method :new
 
   def self.all verbose: true, use_cache: false
-    rewards_index = TangoCard::Raas.rewards_index use_cache: use_cache, verbose: verbose
+    rewards_index = TangoCardV2::Raas.rewards_index use_cache: use_cache, verbose: verbose
     resp          = rewards_index.parsed_response
     unless resp['brands'].present? && resp['brands'].length > 0
       raise "Tangocard error with response code #{rewards_index.code}"
@@ -68,11 +68,11 @@ class TangoCard::Brand < TangoCard::Base
     initialize_read_variables( attrs_list, [], params )
 
     if params['imageUrls'].present?
-      @images   = TangoCard::BrandImage.new( params['imageUrls'] )
+      @images   = TangoCardV2::BrandImage.new( params['imageUrls'] )
     end
 
     if params['items'].present?
-      @rewards  = params['items'].map{ |p| TangoCard::Reward.new(p) }
+      @rewards  = params['items'].map{ |p| TangoCardV2::Reward.new(p) }
     end
 
   end
