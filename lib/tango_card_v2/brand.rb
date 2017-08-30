@@ -62,6 +62,26 @@ class TangoCardV2::Brand < TangoCardV2::Base
     end
   end
 
+  def self.find_reward brandKey: nil, utid: nil
+    raise "To find reward need 'brandKey' and 'utid'" if brandKey.blank? && utid.blank?
+
+    if brandKey.present? && utid.present?
+      condition = { name: 'brandKey', value: brandKey }
+      brand     = all_active.select{ |b| b[ condition[:name] ] == condition[:value] }.first
+      if brand
+        condition = { name: 'utid', value: utid }
+        reward = brand.rewards.select{|r| r.id == condition[:value] }.first
+        if reward
+          return reward
+        else
+          raise "No such reward in brand: #{brand.brandName}"
+        end
+      else
+        raise "No such brand!"
+      end
+    end
+  end
+
   def initialize(params)
 
     attrs_list = %w{ brandKey brandName lastUpdateDate shortDescription status }
