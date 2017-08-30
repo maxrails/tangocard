@@ -1,18 +1,17 @@
 $:.push File.expand_path('../lib', __FILE__)
 
 # Maintain your gem's version:
-require 'tangocard/version'
+require 'tango_card_v2/version'
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
-  s.name        = 'tangocard'
-  s.version     = Tangocard::VERSION
-  s.authors     = ['Raphael Crawford-Marks']
-  s.email       = ['raphael@bonus.ly']
-  s.homepage    = 'http://bonus.ly'
-  s.summary     = 'Ruby Wrapper for Tango Card RaaS API.'
-  s.description = 'Tango Card provides a RaaS API for developers (https://www.tangocard.com/docs/raas-api/). This gem
-                   provides commonsense Ruby objects to wrap the JSON endpoints of the RaaS API.'
+  s.name        = 'tango_card_v2'
+  s.version     = TangoCardV2::VERSION
+  s.authors     = [ 'Max K', 'Denis E' ]
+  s.email       = ['max@oneclass.com']
+  s.homepage    = 'https://oneclass.com'
+  s.summary     = 'Ruby Wrapper for Tango Card RaaS API V2.'
+  s.description = 'Tango Card Reward Delivery Platform (RDP). Checkout RAAS API v2 links: https://integration-www.tangocard.com/raas_api_console/v2/'
 
   s.files = Dir['{app,config,db,lib}/**/*'] + ['MIT-LICENSE', 'Rakefile', 'README.md']
   s.licenses = ['MIT']

@@ -1,40 +1,40 @@
 require 'spec_helper'
 
-describe Tangocard::Brand do
+describe TangoCard::Brand do
   include TangocardHelpers
 
   describe 'class methods' do
-    let (:rewards_index) { Tangocard::Response.new(double(parsed_response: sample_parsed_response, code: 200))}
+    let (:rewards_index) { TangoCard::Response.new(double(parsed_response: sample_parsed_response, code: 200))}
 
     before do
-      allow(Tangocard::Raas).to receive(:rewards_index) { rewards_index }
+      allow(TangoCard::Raas).to receive(:rewards_index) { rewards_index }
     end
 
     describe 'self.all' do
       context 'Tangocard is behaving' do
-        it 'should return an array of Tangocard::Brand objects' do
-          all_brands = Tangocard::Brand.all
+        it 'should return an array of TangoCard::Brand objects' do
+          all_brands = TangoCard::Brand.all
           expect(all_brands).to be_a(Array)
           expect(all_brands.map(&:class).uniq.count).to eq 1
-          expect(all_brands.map(&:class).uniq.first).to eq Tangocard::Brand
+          expect(all_brands.map(&:class).uniq.first).to eq TangoCard::Brand
         end
       end
 
       context 'Tangocard is failing us' do
         before do
-          allow(Tangocard::Raas).to receive(:rewards_index) { Tangocard::Response.new(double(parsed_response: nil, code: 500)) }
+          allow(TangoCard::Raas).to receive(:rewards_index) { TangoCard::Response.new(double(parsed_response: nil, code: 500)) }
         end
 
         it 'should raise a sensible error' do
-          expect { Tangocard::Brand.all }.to raise_error(Tangocard::RaasException)
+          expect { TangoCard::Brand.all }.to raise_error(TangoCard::RaasException)
         end
       end
     end
 
     describe 'self.find' do
       it 'should return the first brand whose description matches the brand_name' do
-        expect(Tangocard::Brand.find('Amazon.com').class).to eq Tangocard::Brand
-        expect(Tangocard::Brand.find('Amazon.com').description).to eq 'Amazon.com'
+        expect(TangoCard::Brand.find('Amazon.com').class).to eq TangoCard::Brand
+        expect(TangoCard::Brand.find('Amazon.com').description).to eq 'Amazon.com'
       end
     end
 
@@ -45,12 +45,12 @@ describe Tangocard::Brand do
         end
       end
 
-      it 'should return array of default Tangocard::Brand objects' do
-        default_brands = Tangocard::Brand.default
+      it 'should return array of default TangoCard::Brand objects' do
+        default_brands = TangoCard::Brand.default
         expect(default_brands).to be_a(Array)
         expect(default_brands.count).to eq 2
         expect(default_brands.map(&:class).uniq.count).to eq 1
-        expect(default_brands.map(&:class).uniq.first).to eq Tangocard::Brand
+        expect(default_brands.map(&:class).uniq.first).to eq TangoCard::Brand
       end
     end
   end
@@ -60,41 +60,41 @@ describe Tangocard::Brand do
     let(:image_url) { Object.new }
     let(:reward) { Object.new }
     let(:params) { {'description' => description, 'image_url' => image_url, 'rewards' => [reward]} }
-    let(:variable_brand) { Tangocard::Brand.new(sample_brand_variable) }
-    let(:fixed_brand) { Tangocard::Brand.new(sample_brand_fixed) }
+    let(:variable_brand) { TangoCard::Brand.new(sample_brand_variable) }
+    let(:fixed_brand) { TangoCard::Brand.new(sample_brand_fixed) }
     let(:cents) { 500 }
 
     describe 'initialize' do
       it 'should initialize the description' do
-        allow(Tangocard::Reward).to receive(:new).with(reward) { true }
-        brand = Tangocard::Brand.new(params)
+        allow(TangoCard::Reward).to receive(:new).with(reward) { true }
+        brand = TangoCard::Brand.new(params)
         expect(brand.description).to eq description
       end
 
       it 'should initialize the image_url' do
-        allow(Tangocard::Reward).to receive(:new).with(reward) { true }
-        brand = Tangocard::Brand.new(params)
+        allow(TangoCard::Reward).to receive(:new).with(reward) { true }
+        brand = TangoCard::Brand.new(params)
         expect(brand.image_url).to eq image_url
       end
 
       it 'should initialize the reward(s)' do
-        expect(Tangocard::Reward).to receive(:new).with(reward) { true }
-        Tangocard::Brand.new(params)
+        expect(TangoCard::Reward).to receive(:new).with(reward) { true }
+        TangoCard::Brand.new(params)
       end
     end
 
     describe 'image_url' do
       it 'should return a local override image, if present' do
-        allow(Tangocard::Reward).to receive(:new).with(reward) { true }
-        allow_any_instance_of(Tangocard::Configuration).to receive(:local_images) { { description => 'local' } }
-        brand = Tangocard::Brand.new(params)
+        allow(TangoCard::Reward).to receive(:new).with(reward) { true }
+        allow_any_instance_of(TangoCard::Configuration).to receive(:local_images) { { description => 'local' } }
+        brand = TangoCard::Brand.new(params)
         expect(brand.image_url).to eq 'local'
       end
 
       it 'should return image_url if no local override image' do
-        allow(Tangocard::Reward).to receive(:new).with(reward) { true }
-        allow_any_instance_of(Tangocard::Configuration).to receive(:local_images) { {} }
-        brand = Tangocard::Brand.new(params)
+        allow(TangoCard::Reward).to receive(:new).with(reward) { true }
+        allow_any_instance_of(TangoCard::Configuration).to receive(:local_images) { {} }
+        brand = TangoCard::Brand.new(params)
         expect(brand.image_url).to eq image_url
       end
     end

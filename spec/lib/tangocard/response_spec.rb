@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Tangocard::Response do
+describe TangoCard::Response do
   let(:code) { Object.new }
   let(:success) { Object.new }
   let(:error_message) { Object.new }
@@ -8,7 +8,7 @@ describe Tangocard::Response do
   let(:raw_response) { OpenStruct.new(:code => code, :parsed_response => parsed_response) }
 
   before do
-    @response = Tangocard::Response.new(raw_response)
+    @response = TangoCard::Response.new(raw_response)
   end
 
   describe "inialize" do
